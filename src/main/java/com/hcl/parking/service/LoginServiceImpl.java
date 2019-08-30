@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.hcl.parking.dto.LoginDto;
 import com.hcl.parking.dto.LoginResponseDto;
 import com.hcl.parking.entity.Registration;
@@ -28,12 +29,11 @@ public class LoginServiceImpl implements LoginService {
 		PasswordUtil passwordUtil = new PasswordUtil();
 		logger.info("inside the loginUser method..");
 		java.util.Optional<Registration> registration = userRepository.findByMobileNumber(loginDto.getMobileNo());
-		java.util.Optional<Role> role = roleRepository.findById(registration.get().getRoleId());
 		if (!registration.isPresent())
 			throw new UserNotFoundException("Invalid credentials");
+		java.util.Optional<Role> role = roleRepository.findById(registration.get().getRoleId());
 		if (!role.isPresent())
 			throw new UserNotFoundException("Role id not available");
-
 		if (registration.get().getMobileNumber().equalsIgnoreCase(loginDto.getMobileNo())
 				&& registration.get().getPassword().equals(passwordUtil.encodePassword(loginDto.getPassword()))) {
 
@@ -42,7 +42,6 @@ public class LoginServiceImpl implements LoginService {
 			loginResponseDto.setRoleName(role.get().getRoleName());
 			loginResponseDto.setStatusCode(200);
 		}
-
 		return loginResponseDto;
 	}
 }
