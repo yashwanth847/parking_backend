@@ -15,6 +15,7 @@ import com.hcl.parking.entity.Registration;
 import com.hcl.parking.exception.CommonException;
 import com.hcl.parking.repository.RegistrationRepository;
 import com.hcl.parking.util.ParkingConstants;
+import com.hcl.parking.util.PasswordUtil;
 
 @Service
 public class UserRegistrationServiceImpl implements UserRegistrationService{
@@ -28,6 +29,7 @@ public class UserRegistrationServiceImpl implements UserRegistrationService{
 		logger.info("in register user service");
 		UserRegistrationResponseDto response = new UserRegistrationResponseDto();
 		Registration register = new Registration();
+		PasswordUtil passwordUtil = new PasswordUtil();
 		Optional<Registration> registration = registrationRepository.findByMobileNumber(userRegistrationRequestDto.getMobileNumber());
 		if(registration.isPresent())
 			throw new CommonException("User already registered");
@@ -47,7 +49,7 @@ public class UserRegistrationServiceImpl implements UserRegistrationService{
 			register.setMobileNumber(userRegistrationRequestDto.getMobileNumber());
 			register.setHclExperience(userRegistrationRequestDto.getHclExperience());
 			register.setOverAllExperience(userRegistrationRequestDto.getOverAllExperience());
-			register.setPassword(userRegistrationRequestDto.getPassword());
+			register.setPassword(passwordUtil.encodePassword(userRegistrationRequestDto.getPassword()));
 			register.setRoleId(2);
 			register.setUserName(userRegistrationRequestDto.getUserName());
 		}
@@ -56,7 +58,7 @@ public class UserRegistrationServiceImpl implements UserRegistrationService{
 			register.setMobileNumber(userRegistrationRequestDto.getMobileNumber());
 			register.setHclExperience(userRegistrationRequestDto.getHclExperience());
 			register.setOverAllExperience(userRegistrationRequestDto.getOverAllExperience());
-			register.setPassword(userRegistrationRequestDto.getPassword());
+			register.setPassword(passwordUtil.encodePassword(userRegistrationRequestDto.getPassword()));
 			register.setRoleId(3);
 			register.setUserName(userRegistrationRequestDto.getUserName());
 		}
