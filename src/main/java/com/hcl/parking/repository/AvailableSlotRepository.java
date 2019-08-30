@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.hcl.parking.entity.AvailableSlot;
 
 @Repository
-public interface AvailableSlotRepository extends JpaRepository<AvailableSlot, Integer> {
+public interface AvailableSlotRepository extends JpaRepository<AvailableSlot, Integer>{
 
+	
 }

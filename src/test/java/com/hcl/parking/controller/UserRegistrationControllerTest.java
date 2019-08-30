@@ -2,7 +2,6 @@ package com.hcl.parking.controller;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.hibernate.annotations.common.util.impl.LoggerFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +39,7 @@ public class UserRegistrationControllerTest {
 	
 	public UserRegistrationRequestDto getUserRegistrationRequestDto()
 	{
+		userRegistrationRequestDto = new UserRegistrationRequestDto();
 		userRegistrationRequestDto.setHclExperience(13F);
 		userRegistrationRequestDto.setMobileNumber("1234567891");
 		userRegistrationRequestDto.setOverAllExperience(20F);
@@ -49,6 +49,7 @@ public class UserRegistrationControllerTest {
 	}
 	public UserRegistrationResponseDto getUserRegistrationResponseDto()
 	{
+		userRegistrationResponseDto = new UserRegistrationResponseDto();
 		userRegistrationResponseDto.setMessage("User registered successfuly");
 		return userRegistrationResponseDto;
 	}
@@ -63,11 +64,10 @@ public class UserRegistrationControllerTest {
 	@Test
 	public void registerUserTest() throws Exception {
 
-		logger.info("in get register user method");
+		logger.info("in  register user method");
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/register").contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON).content(asJsonString(userRegistrationRequestDto)))
 				.andExpect(status().isCreated());
-
 	}
 
 	public static String asJsonString(final Object obj) {
