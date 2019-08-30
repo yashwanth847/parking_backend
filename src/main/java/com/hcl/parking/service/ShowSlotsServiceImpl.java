@@ -3,13 +3,11 @@ package com.hcl.parking.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.hcl.parking.dto.SlotsResponseDto;
 import com.hcl.parking.entity.AvailableSlot;
 import com.hcl.parking.exception.CommonException;
@@ -27,7 +25,6 @@ public class ShowSlotsServiceImpl implements ShowSlotsService {
 
 	@Autowired
 	AvailableSlotRepository availableSlotRepository;
-
 	private static final Logger logger = LoggerFactory.getLogger(ShowSlotsServiceImpl.class);
 
 	/**
@@ -56,6 +53,4 @@ public class ShowSlotsServiceImpl implements ShowSlotsService {
 		
 		return listslot;
 	}
-
-
 }
