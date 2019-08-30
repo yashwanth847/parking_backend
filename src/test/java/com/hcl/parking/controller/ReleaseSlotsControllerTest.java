@@ -8,40 +8,39 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hcl.parking.service.ShowSlotsService;
-/**
- * 
- * @author Venkat
- *
- */
+import com.hcl.parking.dto.ReleaseRequestDto;
+import com.hcl.parking.service.ReleaseSlotService;
+
 @RunWith(MockitoJUnitRunner.class)
-public class ShowAvailableSlotsControllerTest {
-private static final Logger logger = LoggerFactory.getLogger(ShowAvailableSlotsControllerTest.class);
-	@Mock ShowSlotsService showSlotsService;
-	@InjectMocks ShowAvailableSlotsController showAvailableSlotsController;
+public class ReleaseSlotsControllerTest {
+	@Mock
+	ReleaseSlotService releaseSlotService;
+	@InjectMocks
+	ReleaseSlotsController releaseSlotsController;
+	@Autowired
 	MockMvc mockMvc;
+	ReleaseRequestDto releaseRequestDto;
+
 	@Before
 	public void setUp() {
-		mockMvc = MockMvcBuilders.standaloneSetup(showAvailableSlotsController).build();
+		mockMvc = MockMvcBuilders.standaloneSetup(releaseSlotsController).build();
+		releaseRequestDto = new ReleaseRequestDto();
 	}
-	
-	/**
-	 *this method id intended to written to test the getAvailableSlots
-	 */
+
 	@Test
-	public void getAvailableSlotsTest() throws Exception{
-		logger.info("inside the getAvailableSlotsTest method..");
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/showAvailableSlots").contentType(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());	
-	
+	public void testReleaseSlots() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/release").contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON).content(asJsonString(releaseRequestDto)))
+				.andExpect(status().isCreated());
 	}
+
 	public static String asJsonString(final Object obj) {
 		try {
 			return new ObjectMapper().writeValueAsString(obj);

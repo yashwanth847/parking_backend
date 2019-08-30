@@ -1,5 +1,6 @@
 package com.hcl.parking.controller;
 import org.junit.Before;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -17,6 +18,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hcl.parking.dto.LoginDto;
 import com.hcl.parking.dto.LoginResponseDto;
 import com.hcl.parking.service.LoginService;
+/**
+ * 
+ * @author Venkat
+ *
+ */
 @RunWith(MockitoJUnitRunner.class)
 @WebMvcTest(value = LoginController.class)
 public class LoginControllerTest {
