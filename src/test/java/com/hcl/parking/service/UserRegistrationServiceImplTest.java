@@ -15,8 +15,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import com.hcl.parking.dto.UserRegistrationRequestDto;
 import com.hcl.parking.dto.UserRegistrationResponseDto;
 import com.hcl.parking.entity.Registration;
+import com.hcl.parking.exception.CommonException;
 import com.hcl.parking.repository.RegistrationRepository;
-import com.hcl.parking.util.PasswordUtil;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserRegistrationServiceImplTest {
@@ -50,10 +50,10 @@ public class UserRegistrationServiceImplTest {
 	{
 		UserRegistrationRequestDto userRegistrationRequestDto = new UserRegistrationRequestDto();
 		userRegistrationRequestDto.setHclExperience(6F);
-		userRegistrationRequestDto.setMobileNumber("9988776655");
+		userRegistrationRequestDto.setMobileNumber("8877669955");
 		userRegistrationRequestDto.setOverAllExperience(16F);
 		userRegistrationRequestDto.setPassword("123454");
-		userRegistrationRequestDto.setUserName("Gurpreet");
+		userRegistrationRequestDto.setUserName("singh");
 		return userRegistrationRequestDto;
 	}
 	
@@ -63,10 +63,10 @@ public class UserRegistrationServiceImplTest {
 		registration.setHclExperience(7F);
 		registration.setMobileNumber("9988776655");
 		registration.setOverAllExperience(17F);
-		registration.setPassword("12354");
-		registration.setRegistrationId(1);
+		registration.setPassword("123");
+		registration.setRegistrationId(2);
 		registration.setRoleId(1);
-		registration.setUserName("Gurpreet");
+		registration.setUserName("gurpreet");
 		return registration;
 	}
 	
@@ -81,11 +81,17 @@ public class UserRegistrationServiceImplTest {
 	@Test
 	public void testRegisterUser()
 	{
-		Mockito.when(registrationRepository.findByMobileNumber(Mockito.anyString())).thenReturn(Optional.of(registration));
 		Mockito.when(registrationRepository.save(Mockito.any())).thenReturn(registration);
 		UserRegistrationResponseDto response = userRegistrationServiceImpl.registerUser(userRegistrationRequestDto);
-		assertEquals("user registered successfuly", response);
+		assertEquals("User registered successfuly", response.getMessage());
 	}
 	
+	
+	@Test(expected = CommonException.class)
+	public void testRegisterUser_1()
+	{
+		Mockito.when(registrationRepository.findByMobileNumber(Mockito.anyString())).thenReturn(Optional.of(registration));
+		userRegistrationServiceImpl.registerUser(userRegistrationRequestDto);
+	}
 
 }
