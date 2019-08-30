@@ -40,7 +40,6 @@ public class LoginServiceImpl implements LoginService {
 			loginResponseDto.setMessage("Login success..");
 			loginResponseDto.setRegId(registration.get().getRegistrationId());
 			loginResponseDto.setRoleName(role.get().getRoleName());
-			loginResponseDto.setStatusCode(200);
 		}
 		return loginResponseDto;
 	}

@@ -18,6 +18,5 @@ public class LoginResponseDto implements Serializable{/**
 
 	private Integer regId;
 	private String message;
-	private Integer statusCode;
 	private String roleName;
 }

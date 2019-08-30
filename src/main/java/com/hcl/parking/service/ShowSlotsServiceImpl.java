@@ -12,10 +12,9 @@ import org.springframework.stereotype.Service;
 
 import com.hcl.parking.dto.SlotsResponseDto;
 import com.hcl.parking.entity.AvailableSlot;
-import com.hcl.parking.entity.Slot;
 import com.hcl.parking.exception.CommonException;
 import com.hcl.parking.repository.AvailableSlotRepository;
-import com.hcl.parking.repository.SlotRepository;
+
 import com.hcl.parking.util.ParkingConstants;
 
 @Service
@@ -33,7 +32,6 @@ public class ShowSlotsServiceImpl implements ShowSlotsService {
 		List<AvailableSlot> listslot = availableSlotRepository.findAll();
 		if (listslot.isEmpty())
 			throw new CommonException(ParkingConstants.SLOTS_NOT_AVAILABLE);
-
 		listslot.stream().forEach(a -> {
 			SlotsResponseDto slotsResponseDto = new SlotsResponseDto();
 			slotsResponseDto.setAvailableDate(listslot.get(0).getAvailableDate());
