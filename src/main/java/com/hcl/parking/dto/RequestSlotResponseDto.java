@@ -11,12 +11,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginResponseDto implements Serializable{/**
-	 * 
-	 */
+public class RequestSlotResponseDto implements Serializable {
 	private static final long serialVersionUID = 1L;
-
-	private Integer regId;
 	private String message;
-	private String roleName;
+
 }

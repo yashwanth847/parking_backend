@@ -61,7 +61,7 @@ public class ReleaseSlotServiceImpl implements ReleaseSlotService {
 		if (fromDate.compareTo(toDate) != 0 && fromDate.compareTo(toDate) > 0)
 			throw new CommonException(ParkingConstants.ERROR_TO_DATE);
 		List<LocalDate> dates = new ArrayList<>();
-		LocalDate currentDate = fromDate.plusDays(1);
+		LocalDate currentDate = fromDate;
 		ReleaseResponseDto releaseResponseDto = new ReleaseResponseDto();
 		while (currentDate.isBefore(toDate) || currentDate.equals(toDate)) {
 			dates.add(currentDate);

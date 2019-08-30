@@ -24,6 +24,15 @@ public class UserRegistrationServiceImpl implements UserRegistrationService{
 	@Autowired
 	RegistrationRepository registrationRepository;
 
+	/**
+	 * This method is intended to register user and provide a slot for user
+	 * 
+	 * @param UserRegistrationRequestDto is the input object which includes
+	 *                          password,mobileNumber,overAllExperience
+	 *                          userName, hclExperience;
+	 * @exception USER_ALREADY_REGISTERED,INVALID_MOBILENUMBER,INVALID_NAME
+	 * @return UserRegistrationResponseDto which returns message
+	 */
 	@Override
 	public UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userRegistrationRequestDto) {
 		logger.info("in register user service");
@@ -32,8 +41,7 @@ public class UserRegistrationServiceImpl implements UserRegistrationService{
 		PasswordUtil passwordUtil = new PasswordUtil();
 		Optional<Registration> registration = registrationRepository.findByMobileNumber(userRegistrationRequestDto.getMobileNumber());
 		if(registration.isPresent())
-			throw new CommonException("User already registered");
-		
+			throw new CommonException(ParkingConstants.USER_ALREADY_REGISTERED);
 		if(!validMobileNumber(userRegistrationRequestDto.getMobileNumber()))
 		{
 			throw new CommonException(ParkingConstants.INVALID_MOBILENUMBER);
@@ -62,6 +70,7 @@ public class UserRegistrationServiceImpl implements UserRegistrationService{
 			register.setRoleId(3);
 			register.setUserName(userRegistrationRequestDto.getUserName());
 		}
+			
 		registrationRepository.save(register);
 		response.setMessage("User registered successfuly");
 		return response;

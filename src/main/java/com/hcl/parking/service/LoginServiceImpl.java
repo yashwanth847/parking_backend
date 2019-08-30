@@ -1,5 +1,7 @@
 package com.hcl.parking.service;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,11 @@ import com.hcl.parking.repository.RoleRepository;
 import com.hcl.parking.repository.UserRepository;
 import com.hcl.parking.util.PasswordUtil;
 
+/**
+ * 
+ * @author Venkat
+ *
+ */
 @Service
 public class LoginServiceImpl implements LoginService {
 	@Autowired
@@ -23,24 +30,29 @@ public class LoginServiceImpl implements LoginService {
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginServiceImpl.class);
 
+	/**
+	 * This method is intended to login the user with proper credentials
+	 *
+	 * @param LoginDto is the input object which mobileNo, password
+	 * @exception USER_NOT_FOUND
+	 * @return ReleaseResponseDto which returns registrationId,message, roleName
+	 */
 	@Override
 	public LoginResponseDto loginUser(LoginDto loginDto) {
 		LoginResponseDto loginResponseDto = new LoginResponseDto();
 		PasswordUtil passwordUtil = new PasswordUtil();
 		logger.info("inside the loginUser method..");
-		java.util.Optional<Registration> registration = userRepository.findByMobileNumber(loginDto.getMobileNo());
+		Optional<Registration> registration = userRepository.findByMobileNumber(loginDto.getMobileNo());
 		if (!registration.isPresent())
 			throw new UserNotFoundException("Invalid credentials");
-		java.util.Optional<Role> role = roleRepository.findById(registration.get().getRoleId());
+		Optional<Role> role = roleRepository.findById(registration.get().getRoleId());
 		if (!role.isPresent())
 			throw new UserNotFoundException("Role id not available");
 		if (registration.get().getMobileNumber().equalsIgnoreCase(loginDto.getMobileNo())
 				&& registration.get().getPassword().equals(passwordUtil.encodePassword(loginDto.getPassword()))) {
-
-			loginResponseDto.setMessage("Login success..");
+			loginResponseDto.setMessage("Login success");
 			loginResponseDto.setRegId(registration.get().getRegistrationId());
 			loginResponseDto.setRoleName(role.get().getRoleName());
-			loginResponseDto.setStatusCode(200);
 		}
 		return loginResponseDto;
 	}
