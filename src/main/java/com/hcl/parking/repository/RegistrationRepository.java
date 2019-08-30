@@ -9,7 +9,7 @@ import com.hcl.parking.entity.Registration;
 
 @Repository
 public interface RegistrationRepository extends JpaRepository<Registration, Integer> {
-	
+
 	Optional<Registration> findByMobileNumber(String mobileNumber);
 
 }
