@@ -19,5 +19,11 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage()),
 				HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+	
+	@ExceptionHandler(org.springframework.dao.CannotAcquireLockException.class)
+	public ResponseEntity<ErrorResponse> handleAllExceptionsSam(Exception e) {
+		return new ResponseEntity<>(new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), "already locked"),
+				HttpStatus.UNAUTHORIZED);
+	}
 
 }

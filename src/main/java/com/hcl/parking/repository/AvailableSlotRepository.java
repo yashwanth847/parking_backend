@@ -19,8 +19,9 @@ public interface AvailableSlotRepository extends JpaRepository<AvailableSlot, In
 //	@Query(value="SELECT * FROM parkingdb.available_slot  WHERE available_slot_id =?1 FOR UPDATE",nativeQuery = true)
 //	AvailableSlot lockSlot(int availableSlotId);
 
-	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	@Lock(LockModeType.PESSIMISTIC_READ)
 	@Query("SELECT s FROM AvailableSlot s WHERE s.availableSlotId= :availableSlotId and s.status='Available'")
 	AvailableSlot lockSlot(@Param("availableSlotId") int availableSlotId);
 
 }
+

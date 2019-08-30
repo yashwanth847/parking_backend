@@ -14,10 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hcl.parking.dto.BookRequestDto;
 import com.hcl.parking.dto.BookResponseDto;
-import com.hcl.parking.dto.SelectSlotDto;
 import com.hcl.parking.entity.AvailableSlot;
-import com.hcl.parking.entity.Registration;
-import com.hcl.parking.entity.RequestSlot;
 import com.hcl.parking.exception.CommonException;
 import com.hcl.parking.repository.AvailableSlotRepository;
 import com.hcl.parking.repository.RegistrationRepository;
@@ -51,35 +48,45 @@ public class BookServiceImpl implements BookService {
 	 * @return it returns BookResponseDto object with message and bookingId
 	 */
 
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	@Override
 	public BookResponseDto bookSlot(BookRequestDto bookRequestDto) {
+		logger.info("book slot service impl");
 
-		logger.info("request slot service impl");
-		Optional<Registration> registration = registrationRepository.findById(bookRequestDto.getRegId());
-		if (!registration.isPresent())
-			throw new CommonException(ParkingConstants.EMPLOYEE_NOT_FOUND);
-		
-		Optional<AvailableSlot> availableSlot= availableSlotRepository.findById(bookRequestDto.getAvailableSlotId());
+		Optional<AvailableSlot> availableSlot = availableSlotRepository.findById(bookRequestDto.getAvailableSlotId());
 		if (!availableSlot.isPresent())
-			throw new CommonException("No slot present");		
+			throw new CommonException("No slot present");
 
 		// Fetching all availableSlots from AvailableSlot table
 		List<AvailableSlot> availableSlots = availableSlotRepository.findByAvailableDate(LocalDate.now());
 		if (availableSlots.isEmpty())
 			throw new CommonException(ParkingConstants.NO_AVAILABLE_SLOTS);
+		try {
+			availableSlotRepository.lockSlot(availableSlots.get(0).getAvailableSlotId());
+		} catch (org.hibernate.exception.LockAcquisitionException e) {
+			throw new CommonException(" Slot Already booked");
+
+		}
+//		try {
+//			Thread.sleep(30000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
 
 		AvailableSlot availableSlotDb = availableSlots.get(0);
+		if (availableSlotDb.getStatus().equalsIgnoreCase("Booked"))
+			throw new CommonException("Already booked");
+
 		availableSlotDb.setBookedEmpId(bookRequestDto.getRegId());
 		availableSlotDb.setStatus("booked");
+		try {
 		availableSlotRepository.save(availableSlotDb);
+		}
+		catch (Exception e) {
+			throw new CommonException(" Slot Already booked");
+		}
 
-		// saving all requests in RequestSlot table
-		RequestSlot requestSlot = new RequestSlot();
-		requestSlot.setRequestDate(LocalDate.now());
-		requestSlot.setRegistrationId(bookRequestDto.getRegId());
-		requestSlotRepository.save(requestSlot);
-
-		return new BookResponseDto("slot booked");
+		return new BookResponseDto("slot booked", "Your slot id is:" + availableSlotDb.getSlotId());
 	}
 
 	public LocalDate getLocalDate(String data) {
@@ -89,20 +96,5 @@ public class BookServiceImpl implements BookService {
 
 	}
 
-	@Transactional(isolation=Isolation.REPEATABLE_READ)
-	@Override
-	public BookResponseDto selectSlot(SelectSlotDto selectSlotDto) {
-		
-		AvailableSlot lockAvailableSlot = availableSlotRepository
-				.lockSlot(selectSlotDto.getAvailableSlotId());
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		availableSlotRepository.save(lockAvailableSlot);
-
-		return new BookResponseDto("Slot locked");
-	}
 
 }
