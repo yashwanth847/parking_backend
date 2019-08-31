@@ -7,5 +7,6 @@ public interface BookService {
 	
 	
 	BookResponseDto bookSlot(BookRequestDto bookRequestDto);
+	BookResponseDto doRaffle();
 
 }

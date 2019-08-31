@@ -22,6 +22,7 @@ public interface AvailableSlotRepository extends JpaRepository<AvailableSlot, In
 	@Lock(LockModeType.PESSIMISTIC_READ)
 	@Query("SELECT s FROM AvailableSlot s WHERE s.availableSlotId= :availableSlotId and s.status='Available'")
 	AvailableSlot lockSlot(@Param("availableSlotId") int availableSlotId);
+	
 
 }
 

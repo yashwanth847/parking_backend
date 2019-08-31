@@ -25,8 +25,10 @@ public class BookSlotController {
 	public ResponseEntity<BookResponseDto> bookSlots(@RequestBody BookRequestDto bookRequestDto) {
 		return new ResponseEntity<>(bookService.bookSlot(bookRequestDto), HttpStatus.CREATED);
 	}
-	
-	
 
-	
+	@PostMapping("/doRaffle")
+	public ResponseEntity<BookResponseDto> doRaffle() {
+		return new ResponseEntity<>(bookService.doRaffle(), HttpStatus.CREATED);
+	}
+
 }

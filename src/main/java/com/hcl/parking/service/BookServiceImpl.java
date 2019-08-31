@@ -2,12 +2,15 @@ package com.hcl.parking.service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.hcl.parking.dto.BookRequestDto;
 import com.hcl.parking.dto.BookResponseDto;
 import com.hcl.parking.entity.AvailableSlot;
+import com.hcl.parking.entity.RequestSlot;
 import com.hcl.parking.exception.CommonException;
 import com.hcl.parking.repository.AvailableSlotRepository;
 import com.hcl.parking.repository.RegistrationRepository;
@@ -39,6 +43,8 @@ public class BookServiceImpl implements BookService {
 
 	@Autowired
 	AvailableSlotRepository availableSlotRepository;
+
+	Random random = new Random();
 
 	/**
 	 * 
@@ -80,9 +86,8 @@ public class BookServiceImpl implements BookService {
 		availableSlotDb.setBookedEmpId(bookRequestDto.getRegId());
 		availableSlotDb.setStatus("booked");
 		try {
-		availableSlotRepository.save(availableSlotDb);
-		}
-		catch (Exception e) {
+			availableSlotRepository.save(availableSlotDb);
+		} catch (Exception e) {
 			throw new CommonException(" Slot Already booked");
 		}
 
@@ -91,10 +96,34 @@ public class BookServiceImpl implements BookService {
 
 	public LocalDate getLocalDate(String data) {
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(ParkingConstants.DATE_FORMAT);
-		LocalDate dateOfJoiningLocalDate = LocalDate.parse(data, dateTimeFormatter);
-		return dateOfJoiningLocalDate;
+		return LocalDate.parse(data, dateTimeFormatter);
 
 	}
 
+	
+	@Scheduled(fixedRate = 1*60*1000)
+	@Override
+	public BookResponseDto doRaffle() {
+		 logger.info("Current time is :: " + Calendar.getInstance().getTime());
+
+		List<RequestSlot> requestSlotList = requestSlotRepository.findByRequestDate(LocalDate.now().plusDays(1));
+		List<AvailableSlot> availableSlotsList = availableSlotRepository
+				.findByAvailableDate(LocalDate.now().plusDays(1));
+		for (int i = 0; i < availableSlotsList.size(); i++) {
+			for (int j = 0; j < requestSlotList.size(); j++) {
+				int randomIndex = random.nextInt(requestSlotList.size() - 1);
+
+				int registrationId = requestSlotList.get(randomIndex).getRegistrationId();
+
+				availableSlotsList.get(randomIndex).setBookedEmpId(registrationId);
+				availableSlotsList.get(randomIndex).setStatus("booked");
+
+				availableSlotRepository.save(availableSlotsList.get(randomIndex));
+
+			}
+		}
+
+		return new BookResponseDto("Success", null);
+	}
 
 }
