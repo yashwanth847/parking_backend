@@ -77,11 +77,11 @@
 	</dependencies>
 	
 	<distributionManagement>
-          <snapshotRepository>
-          <id>nexus</id>
-          <url>http://ec2-13-127-243-89.ap-south-1.compute.amazonaws.com:8081/nexus/content/repositories/parking_backend-SNAPSHOT/</url>
-          </snapshotRepository>
-       </distributionManagement>
+  <snapshotRepository>
+    <id>nexus</id>
+    <url>http://13.57.197.245:8081/nexus/content/repositories/snapshots</url>
+  </snapshotRepository>
+</distributionManagement>
 
 	<build>
 		<plugins>
